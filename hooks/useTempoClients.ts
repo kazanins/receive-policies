@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { useAccount, usePublicClient, useConnectorClient } from "wagmi";
-import { getConnectorClient } from "@wagmi/core";
+import { getConnectorClient, getChainId, switchChain } from "@wagmi/core";
 import { tempoTestnetChain, config as wagmiConfig } from "@/lib/wagmi";
 import { useMounted } from "./useMounted";
 
@@ -49,6 +49,12 @@ export function useTempoClients() {
 // bypasses the hook cache by calling the core action directly, which awaits
 // Provider creation and resolves when the client is ready. Used by write
 // functions so they work even when the hook hasn't resolved yet.
+//
+// Also switches to Tempo Testnet if the wallet is on a different chain, since
+// getConnectorClient asserts chain match by default.
 export async function getWriteClient() {
+  if (getChainId(wagmiConfig) !== CHAIN_ID) {
+    await switchChain(wagmiConfig, { chainId: CHAIN_ID });
+  }
   return getConnectorClient(wagmiConfig, { chainId: CHAIN_ID });
 }

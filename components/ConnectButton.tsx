@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useAccount, useConnect, useConnectors, useDisconnect } from "wagmi";
+import { tempoTestnetChain } from "@/lib/wagmi";
 import { Button } from "./ui";
 import { shortAddress } from "@/lib/tokens";
 import { useToast } from "./Toast";
@@ -43,7 +44,7 @@ export function ConnectButton() {
       loading={isPending}
       onClick={() =>
         connector
-          ? connect({ connector })
+          ? connect({ connector, chainId: tempoTestnetChain.id })
           : notify("No wallet connector available", "error")
       }
     >
