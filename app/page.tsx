@@ -7,6 +7,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { ReceivePolicySummary } from "@/components/ReceivePolicySummary";
 import { TokenBlocklistManager } from "@/components/TokenBlocklistManager";
 import { BlockedReceiptsFeed } from "@/components/BlockedReceiptsFeed";
+import { FaucetBanner } from "@/components/FaucetBanner";
 
 export default function Page() {
   const leftRef = useRef<HTMLDivElement>(null);
@@ -42,6 +43,10 @@ export default function Page() {
         <main className="mx-auto max-w-6xl px-5 py-8">
           <Hero />
 
+          <div className="mt-4">
+            <FaucetBanner />
+          </div>
+
           <div
             className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start"
             style={{ "--left-h": `${leftHeight}px` } as React.CSSProperties}
@@ -61,7 +66,7 @@ export default function Page() {
 
 function Hero() {
   return (
-    <section className="rounded-[var(--radius-xl)] border border-border-subtle bg-bg-primary p-7 shadow-[var(--elevation-100)]">
+    <section className="rounded-[var(--radius-xl)] border border-border-subtle bg-bg-primary p-7">
       <h1 className="ts-display text-text-primary">
         Control what your account can receive.
       </h1>

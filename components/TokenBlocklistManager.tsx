@@ -46,7 +46,28 @@ export function TokenBlocklistManager() {
       await fn((message) => notify(message, "info"));
       notify(okMsg, "success");
     } catch (e) {
-      notify(`Transaction failed: ${(e as Error)?.message ?? "unknown"}`, "error");
+      const err = e as Error & { shortMessage?: string; cause?: { message?: string } };
+      console.error("Transaction error:", err);
+      const detail = err.cause?.message ?? err.message ?? "unknown";
+      const msg = err.shortMessage ?? detail;
+      const isInsufficientFunds =
+        /insufficient funds|exceeds the balance|total: balance/i.test(
+          `${err.shortMessage ?? ""} ${detail}`,
+        );
+      const isWebAuthn = /WebAuthn|publickey|credential/i.test(
+        `${err.shortMessage ?? ""} ${detail}`,
+      );
+      const isTlsError = /TLS certificate|insecure context/i.test(
+        `${err.shortMessage ?? ""} ${detail}`,
+      );
+      const hint = isTlsError
+        ? " WebAuthn requires a trusted HTTPS certificate. Run `npm run dev` (it uses mkcert)."
+        : isWebAuthn
+          ? " WebAuthn failed. Make sure dev is running over HTTPS (`npm run dev`)."
+          : isInsufficientFunds
+            ? " Use the faucet at the top of the page to fund your account."
+            : "";
+      notify(`Transaction failed: ${msg}${hint}`, "error");
     } finally {
       setBusy(null);
     }

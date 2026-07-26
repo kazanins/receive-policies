@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
+import { IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+
+const plexMono = IBM_Plex_Mono({
+  weight: ["400", "500"],
+  subsets: ["latin"],
+  variable: "--font-plex-mono",
+});
 
 export const metadata: Metadata = {
   title: "Tempo Receive Policies",
@@ -14,7 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-theme="dark" suppressHydrationWarning>
-      <body className="min-h-screen flex flex-col">{children}</body>
+      <body className={`${plexMono.variable} min-h-screen flex flex-col`}>
+        {children}
+      </body>
     </html>
   );
 }

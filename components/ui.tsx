@@ -11,7 +11,7 @@ export function Card({
 }) {
   return (
     <div
-      className={`rounded-[var(--radius-lg)] border border-border-default bg-bg-primary p-6 shadow-[var(--elevation-100)] ${className}`}
+      className={`rounded-[var(--radius-lg)] border border-border-default bg-bg-primary p-6 ${className}`}
     >
       {children}
     </div>
@@ -60,15 +60,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref,
   ) {
     const sizes: Record<string, string> = {
-      sm: "h-8 px-3 text-[12px]",
+      sm: "h-8 px-3 text-[13px]",
       base: "h-10 px-4 text-[14px]",
       lg: "h-11 px-4 text-[14px]",
     };
     const variants: Record<string, string> = {
       primary:
-        "bg-bg-inverse text-text-inverse hover:shadow-[var(--elevation-300)]",
+        "bg-bg-inverse text-text-inverse border border-bg-inverse hover:opacity-80",
       secondary:
-        "bg-bg-action-secondary text-text-primary hover:shadow-[var(--elevation-300)]",
+        "bg-bg-action-secondary text-text-primary border border-border-default hover:bg-bg-tertiary",
       outline:
         "bg-transparent border border-border-default text-text-primary hover:bg-bg-secondary",
       ghost: "bg-transparent text-text-primary hover:bg-bg-action-secondary",
@@ -78,7 +78,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         disabled={disabled || loading}
-        className={`inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-medium transition-[box-shadow,background-color] duration-[var(--duration-normal)] focus-ring disabled:cursor-not-allowed disabled:opacity-50 ${sizes[size]} ${variants[variant]} ${className}`}
+        className={`inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] font-semibold transition-[opacity,background-color,border-color] duration-[var(--duration-normal)] focus-ring disabled:cursor-not-allowed disabled:opacity-50 ${sizes[size]} ${variants[variant]} ${className}`}
         {...rest}
       >
         {loading && <Spinner size={14} />}

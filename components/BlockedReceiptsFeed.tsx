@@ -34,7 +34,18 @@ export function BlockedReceiptsFeed() {
         "success",
       );
     } catch (e) {
-      notify(`Claim failed: ${(e as Error)?.message ?? "unknown"}`, "error");
+      const err = e as Error & { shortMessage?: string; cause?: { message?: string } };
+      console.error("Claim error:", err);
+      const detail = err.cause?.message ?? err.message ?? "unknown";
+      const msg = err.shortMessage ?? detail;
+      const isInsufficientFunds =
+        /insufficient funds|exceeds the balance|total: balance/i.test(
+          `${err.shortMessage ?? ""} ${detail}`,
+        );
+      const hint = isInsufficientFunds
+        ? " Use the faucet at the top of the page to fund your account."
+        : "";
+      notify(`Claim failed: ${msg}${hint}`, "error");
     }
   }
 
@@ -46,8 +57,8 @@ export function BlockedReceiptsFeed() {
         action={
           <span className="inline-flex items-center gap-1.5 ts-body-sm text-text-tertiary">
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-icon-success opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-icon-success" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" style={{ background: "var(--icon-success)" }} />
+              <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: "var(--icon-success)" }} />
             </span>
             live
           </span>
@@ -190,7 +201,7 @@ function ReceiptRow({
               href={`https://explore.testnet.tempo.xyz/receipt/${r.transactionHash}`}
               target="_blank"
               rel="noreferrer"
-              className="ts-data-sm text-text-link hover:underline"
+              className="ts-data-sm text-text-tertiary hover:text-text-primary hover:underline"
             >
               tx {shortAddress(r.transactionHash)}
             </a>

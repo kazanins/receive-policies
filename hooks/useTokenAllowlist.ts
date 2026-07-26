@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Actions } from "viem/tempo";
 import type { Address } from "viem";
-import { useTempoClients } from "./useTempoClients";
+import { useTempoClients, getWriteClient } from "./useTempoClients";
 import { useReceivePolicy } from "./useReceivePolicy";
 import { TESTNET_TOKENS, type TempoToken } from "@/lib/tokens";
 import { qk } from "@/lib/queryKeys";
@@ -115,20 +115,21 @@ export function useTokenAllowlist() {
     token: TempoToken,
     onStep?: (message: string) => void,
   ) {
-    if (!connectorClient || !address) throw new Error("Wallet not connected");
+    if (!address) throw new Error("Wallet not connected");
+    const client = connectorClient ?? (await getWriteClient());
 
     const senderPolicyId = resolveSenderPolicyId(receivePolicy.data);
     const claimer = "self" as const;
 
     if (!customPolicyId) {
       onStep?.(`Step 1 of 2: Creating allowlist policy for ${token.symbol}…`);
-      const created = await Actions.policy.createSync(connectorClient, {
+      const created = await Actions.policy.createSync(client, {
         admin: address as Address,
         type: "whitelist",
         addresses: [token.address],
       });
       onStep?.("Step 2 of 2: Activating receive policy…");
-      await Actions.receivePolicy.setSync(connectorClient, {
+      await Actions.receivePolicy.setSync(client, {
         senderPolicyId,
         tokenPolicyId: created.policyId,
         claimer,
@@ -143,20 +144,20 @@ export function useTokenAllowlist() {
         onStep?.(
           `Step 1 of 2: Removing ${oldToken?.symbol ?? "old token"} from allowlist…`,
         );
-        await Actions.policy.modifyWhitelistSync(connectorClient, {
+        await Actions.policy.modifyWhitelistSync(client, {
           policyId: customPolicyId,
           address: oldToken!.address,
           allowed: false,
         });
         onStep?.(`Step 2 of 2: Allowing ${token.symbol}…`);
-        await Actions.policy.modifyWhitelistSync(connectorClient, {
+        await Actions.policy.modifyWhitelistSync(client, {
           policyId: customPolicyId,
           address: token.address,
           allowed: true,
         });
       } else {
         onStep?.(`Allowing ${token.symbol}…`);
-        await Actions.policy.modifyWhitelistSync(connectorClient, {
+        await Actions.policy.modifyWhitelistSync(client, {
           policyId: customPolicyId,
           address: token.address,
           allowed: true,
@@ -169,9 +170,9 @@ export function useTokenAllowlist() {
   // Reset the token filter back to allow-all (accept every token). Keeps the
   // existing sender policy and claimer.
   async function clearAllowlist() {
-    if (!connectorClient) throw new Error("Wallet not connected");
+    const client = connectorClient ?? (await getWriteClient());
     const claimer = "self" as const;
-    await Actions.receivePolicy.setSync(connectorClient, {
+    await Actions.receivePolicy.setSync(client, {
       senderPolicyId: "allow-all",
       tokenPolicyId: "allow-all",
       claimer,
@@ -184,16 +185,17 @@ export function useTokenAllowlist() {
   async function convertToWhitelist(
     onStep?: (message: string) => void,
   ) {
-    if (!connectorClient || !address) throw new Error("Wallet not connected");
+    if (!address) throw new Error("Wallet not connected");
+    const client = connectorClient ?? (await getWriteClient());
     const senderPolicyId = resolveSenderPolicyId(receivePolicy.data);
     const claimer = "self" as const;
     onStep?.("Step 1 of 2: Creating a new whitelist policy…");
-    const created = await Actions.policy.createSync(connectorClient, {
+    const created = await Actions.policy.createSync(client, {
       admin: address as Address,
       type: "whitelist",
     });
     onStep?.("Step 2 of 2: Activating receive policy…");
-    await Actions.receivePolicy.setSync(connectorClient, {
+    await Actions.receivePolicy.setSync(client, {
       senderPolicyId,
       tokenPolicyId: created.policyId,
       claimer,

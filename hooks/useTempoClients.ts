@@ -2,7 +2,8 @@
 
 import { useMemo } from "react";
 import { useAccount, usePublicClient, useConnectorClient } from "wagmi";
-import { tempoTestnetChain } from "@/lib/wagmi";
+import { getConnectorClient } from "@wagmi/core";
+import { tempoTestnetChain, config as wagmiConfig } from "@/lib/wagmi";
 import { useMounted } from "./useMounted";
 
 const CHAIN_ID = tempoTestnetChain.id;
@@ -40,4 +41,14 @@ export function useTempoClients() {
     }),
     [mounted, account, address, isConnected, publicClient, connectorClient, clientStatus],
   );
+}
+
+// Fetch a connector client on demand. The `useConnectorClient` hook can be
+// stale (its query is disabled during 'reconnecting', or it can cache a
+// rejected promise from a transient Provider.create failure). This helper
+// bypasses the hook cache by calling the core action directly, which awaits
+// Provider creation and resolves when the client is ready. Used by write
+// functions so they work even when the hook hasn't resolved yet.
+export async function getWriteClient() {
+  return getConnectorClient(wagmiConfig, { chainId: CHAIN_ID });
 }

@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { Actions, Abis, Addresses } from "viem/tempo";
 import { ReceivePolicyReceipt } from "ox/tempo";
 import { zeroAddress, type Address } from "viem";
-import { useTempoClients } from "./useTempoClients";
+import { useTempoClients, getWriteClient } from "./useTempoClients";
 import { tokenByAddress, type TempoToken } from "@/lib/tokens";
 
 export type BlockedReceipt = {
@@ -222,14 +222,14 @@ export function useBlockedReceipts() {
 
   const claim = useCallback(
     async (receipt: BlockedReceipt, to: Address) => {
-      if (!connectorClient) throw new Error("Wallet not connected");
+      const client = connectorClient ?? (await getWriteClient());
       setReceipts((prev) =>
         prev.map((r) =>
           r.key === receipt.key ? { ...r, claimPending: true } : r,
         ),
       );
       try {
-        await Actions.receivePolicy.claimSync(connectorClient, {
+        await Actions.receivePolicy.claimSync(client, {
           to,
           receipt: receipt.claimReceipt,
         });
