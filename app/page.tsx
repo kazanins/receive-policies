@@ -1,65 +1,99 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useEffect, useRef, useState } from "react";
+import { Providers } from "./providers";
+import { ConnectButton } from "@/components/ConnectButton";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { ReceivePolicySummary } from "@/components/ReceivePolicySummary";
+import { TokenBlocklistManager } from "@/components/TokenBlocklistManager";
+import { BlockedReceiptsFeed } from "@/components/BlockedReceiptsFeed";
+
+export default function Page() {
+  const leftRef = useRef<HTMLDivElement>(null);
+  const [leftHeight, setLeftHeight] = useState(0);
+
+  useEffect(() => {
+    if (!leftRef.current) return;
+    const observer = new ResizeObserver((entries) => {
+      requestAnimationFrame(() => setLeftHeight(entries[0].contentRect.height));
+    });
+    observer.observe(leftRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <Providers>
+      <div className="min-h-screen">
+        <header className="sticky top-0 z-10 border-b border-border-default bg-bg-primary/80 backdrop-blur-md">
+          <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
+            <div className="flex items-center gap-2.5">
+              <Logo className="text-text-primary" />
+              <div className="leading-tight">
+                <div className="ts-h2 text-text-primary">Receive Policies Demo</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <ConnectButton />
+              <ThemeToggle />
+            </div>
+          </div>
+        </header>
+
+        <main className="mx-auto max-w-6xl px-5 py-8">
+          <Hero />
+
+          <div
+            className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start"
+            style={{ "--left-h": `${leftHeight}px` } as React.CSSProperties}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+            <div ref={leftRef} className="flex flex-col gap-6">
+              <TokenBlocklistManager />
+              <ReceivePolicySummary />
+            </div>
+            <BlockedReceiptsFeed />
+          </div>
+
+        </main>
+      </div>
+    </Providers>
+  );
+}
+
+function Hero() {
+  return (
+    <section className="rounded-[var(--radius-xl)] border border-border-subtle bg-bg-primary p-7 shadow-[var(--elevation-100)]">
+      <h1 className="ts-display text-text-primary">
+        Control what your account can receive.
+      </h1>
+      <p className="ts-body mt-3 max-w-2xl text-text-secondary">
+        Receive policies let a Tempo account reject incoming TIP-20 tokens it
+        does not want. Blocked transfers still succeed, but delivery is
+        redirected to{" "}
+        <code className="ts-data-sm rounded bg-bg-secondary px-1 py-0.5">
+          ReceivePolicyGuard
+        </code>{" "}
+        and recorded as a claimable receipt.
+      </p>
+    </section>
+  );
+}
+
+function Logo({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      width="32"
+      height="32"
+      viewBox="0 0 40 40"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      role="img"
+      aria-label="Tempo"
+    >
+      <path
+        d="M17.6429 28.1631H13.1933L17.3173 15.4122H12.043L13.1933 11.6748H27.8878L26.7374 15.4122H21.7452L17.6429 28.1631Z"
+        fill="currentColor"
+      />
+    </svg>
   );
 }

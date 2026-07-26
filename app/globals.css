@@ -1,26 +1,346 @@
 @import "tailwindcss";
 
+/* ============================================================
+   Potemkin Design System tokens
+   Source of truth: potemkin-design-system reference
+   ============================================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Grey */
+  --gray-50: #f2f2f2;
+  --gray-100: #e5e5e5;
+  --gray-200: #cccccc;
+  --gray-300: #b3b3b3;
+  --gray-400: #808080;
+  --gray-500: #666666;
+  --gray-600: #404040;
+  --gray-700: #333333;
+  --gray-800: #262626;
+  --gray-900: #1a1a1a;
+  --gray-950: #0d0d0d;
+
+  /* Blue */
+  --blue-100: #eff6ff;
+  --blue-200: #dbeafe;
+  --blue-300: #bedbff;
+  --blue-400: #8ec5ff;
+  --blue-500: #51a2ff;
+  --blue-600: #2b7fff;
+  --blue-700: #155dfc;
+  --blue-800: #1447e6;
+  --blue-900: #1c398e;
+  --blue-1000: #162456;
+
+  /* Red */
+  --red-100: #fff5f5;
+  --red-200: #ffe2e0;
+  --red-300: #ffc7c2;
+  --red-400: #ffafa3;
+  --red-500: #fb2c36;
+  --red-600: #e7000b;
+  --red-700: #bd2915;
+  --red-800: #9f1f18;
+  --red-900: #771208;
+  --red-1000: #660e0b;
+
+  /* Green */
+  --green-100: #effef3;
+  --green-200: #d7f6d6;
+  --green-300: #bef2c9;
+  --green-400: #9adea8;
+  --green-500: #50ab64;
+  --green-600: #439758;
+  --green-700: #377e49;
+  --green-800: #2c663d;
+  --green-900: #1c4529;
+  --green-1000: #193925;
+
+  /* Yellow */
+  --yellow-100: #fffbea;
+  --yellow-200: #fff1bc;
+  --yellow-300: #ffe799;
+  --yellow-400: #ffd74c;
+  --yellow-500: #ffcb00;
+  --yellow-600: #ffbf00;
+  --yellow-700: #ffc82a;
+  --yellow-800: #f7a200;
+  --yellow-900: #ea9000;
+  --yellow-1000: #c55c00;
+
+  /* Orange */
+  --orange-100: #fff4e4;
+  --orange-200: #ffdfbe;
+  --orange-300: #ffcf94;
+  --orange-400: #ffc15f;
+  --orange-500: #ffa100;
+
+  /* Semantic tokens (light defaults) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f2f2f2;
+  --bg-tertiary: #e5e5e5;
+  --bg-inverse: #0d0d0d;
+  --bg-overlay: rgba(0, 0, 0, 0.5);
+  --bg-danger: #fb2c36;
+  --bg-danger-hover: #e7000b;
+  --bg-informative: #eff6ff;
+  --bg-warning: #fffbea;
+  --bg-success: #d7f6d6;
+  --bg-action-secondary: #f2f2f2;
+  --bg-action-primary-hover: #262626;
+
+  --text-primary: #0d0d0d;
+  --text-secondary: #404040;
+  --text-tertiary: #808080;
+  --text-disabled: #b3b3b3;
+  --text-inverse: #ffffff;
+  --text-on-color: #ffffff;
+  --text-danger: #e7000b;
+  --text-warning: #ffcb00;
+  --text-success: #50ab64;
+  --text-link: #2b7fff;
+
+  --icon-primary: #0d0d0d;
+  --icon-secondary: #404040;
+  --icon-tertiary: #808080;
+  --icon-disabled: #b3b3b3;
+  --icon-inverse: #ffffff;
+  --icon-informative: #51a2ff;
+  --icon-success: #50ab64;
+  --icon-danger: #fb2c36;
+  --icon-warning: #ffcb00;
+
+  --border-default: #cccccc;
+  --border-strong: #b3b3b3;
+  --border-subtle: #e5e5e5;
+  --border-disabled: #e5e5e5;
+  --border-base: #000000;
+  --border-selected: #808080;
+  --border-assistive: #51a2ff;
+
+  /* Typography */
+  --font-display: ui-sans-serif, system-ui, sans-serif;
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Spacing */
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 36px;
+  --space-9: 40px;
+  --space-10: 48px;
+
+  /* Radius */
+  --radius-none: 0px;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Elevation (light) */
+  --elevation-100: 0px 1px 3px rgba(0, 0, 0, 0.15);
+  --elevation-200: 0px 1px 3px rgba(0, 0, 0, 0.1), 0px 3px 8px rgba(0, 0, 0, 0.1);
+  --elevation-300: 0px 1px 3px rgba(0, 0, 0, 0.1), 0px 5px 12px rgba(0, 0, 0, 0.13);
+  --elevation-400: 0px 1px 3px rgba(0, 0, 0, 0.15), 0px 10px 16px rgba(0, 0, 0, 0.12);
+
+  /* Transitions */
+  --duration-fast: 80ms;
+  --duration-normal: 120ms;
+  --duration-slow: 180ms;
+
+  color-scheme: light;
 }
 
+[data-theme="dark"] {
+  --bg-primary: #0d0d0d;
+  --bg-secondary: #1a1a1a;
+  --bg-tertiary: #262626;
+  --bg-inverse: #ffffff;
+  --bg-overlay: rgba(0, 0, 0, 0.7);
+  --bg-informative: #162456;
+  --bg-warning: #c55c00;
+  --bg-success: #193925;
+  --bg-action-secondary: #262626;
+  --bg-action-primary-hover: #404040;
+
+  --text-primary: #ffffff;
+  --text-secondary: #666666;
+  --text-disabled: #666666;
+  --text-inverse: #0d0d0d;
+  --text-danger: #ffafa3;
+  --text-warning: #f7a200;
+  --text-success: #439758;
+
+  --icon-primary: #ffffff;
+  --icon-secondary: #808080;
+  --icon-tertiary: #404040;
+  --icon-inverse: #0d0d0d;
+  --icon-informative: #2b7fff;
+  --icon-success: #439758;
+  --icon-danger: #e7000b;
+  --icon-warning: #ffbf00;
+
+  --border-default: #262626;
+  --border-strong: #333333;
+  --border-subtle: #1a1a1a;
+  --border-disabled: #262626;
+  --border-base: #ffffff;
+  --border-selected: #404040;
+
+  --elevation-100: 0px 1px 3px rgba(255, 255, 255, 0.04), inset 0px 0.5px 0px rgba(255, 255, 255, 0.1);
+  --elevation-200: 0px 1px 3px rgba(255, 255, 255, 0.08), inset 0px 0.5px 0px rgba(255, 255, 255, 0.08);
+  --elevation-300: 0px 2px 8px rgba(255, 255, 255, 0.12), inset 0px 0.5px 0px rgba(255, 255, 255, 0.08);
+  --elevation-400: 0px 2px 8px rgba(255, 255, 255, 0.15), inset 0px 0.5px 0px rgba(255, 255, 255, 0.08);
+
+  color-scheme: dark;
+}
+
+/* Map Potemkin tokens into Tailwind v4 theme so utilities like
+   `bg-primary`, `text-secondary`, `border-default` are available. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+  --color-bg-tertiary: var(--bg-tertiary);
+  --color-bg-inverse: var(--bg-inverse);
+  --color-bg-overlay: var(--bg-overlay);
+  --color-bg-danger: var(--bg-danger);
+  --color-bg-danger-hover: var(--bg-danger-hover);
+  --color-bg-informative: var(--bg-informative);
+  --color-bg-warning: var(--bg-warning);
+  --color-bg-success: var(--bg-success);
+  --color-bg-action-secondary: var(--bg-action-secondary);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-disabled: var(--text-disabled);
+  --color-text-inverse: var(--text-inverse);
+  --color-text-on-color: var(--text-on-color);
+  --color-text-danger: var(--text-danger);
+  --color-text-warning: var(--text-warning);
+  --color-text-success: var(--text-success);
+  --color-text-link: var(--text-link);
+
+  --color-icon-primary: var(--icon-primary);
+  --color-icon-secondary: var(--icon-secondary);
+  --color-icon-tertiary: var(--icon-tertiary);
+  --color-icon-inverse: var(--icon-inverse);
+  --color-icon-informative: var(--icon-informative);
+  --color-icon-success: var(--icon-success);
+  --color-icon-danger: var(--icon-danger);
+  --color-icon-warning: var(--icon-warning);
+
+  --color-border-default: var(--border-default);
+  --color-border-strong: var(--border-strong);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-disabled: var(--border-disabled);
+  --color-border-base: var(--border-base);
+  --color-border-selected: var(--border-selected);
+  --color-border-assistive: var(--border-assistive);
+
+  --color-brand: var(--blue-600);
+  --color-brand-hover: var(--blue-700);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-display: var(--font-display);
+
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-full: var(--radius-full);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Potemkin type scale helpers */
+.ts-display {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 450;
+  line-height: 35px;
+  letter-spacing: -0.02em;
+}
+.ts-h1 {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 26px;
+}
+.ts-h2 {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 22px;
+}
+.ts-h3 {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 18px;
+}
+.ts-h4 {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 15px;
+}
+.ts-body {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+.ts-body-strong {
+  font-size: 14px;
+  font-weight: 450;
+  line-height: 20px;
+}
+.ts-body-sm {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 17px;
+}
+.ts-data {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 21px;
+}
+.ts-data-sm {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 17px;
+}
+
+/* Focus ring (Potemkin: border-assistive + 3px ring at 50% opacity) */
+.focus-ring:focus-visible {
+  outline: none;
+  border-color: var(--border-assistive);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--border-assistive) 50%, transparent);
+}
+
+/* Thin scrollbar for panels */
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-default) transparent;
+}
+.scroll-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: var(--radius-full);
 }
